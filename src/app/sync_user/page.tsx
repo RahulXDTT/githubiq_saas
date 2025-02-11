@@ -18,26 +18,25 @@ const SyncUser = async () => {
 
     await db.user.upsert({
         where: { 
-          emailAddress: user.emailAddresses?.[8]?.emailAddress ?? "default@example.com"
+          emailAddress: user.emailAddresses?.[0]?.emailAddress ?? "default@example.com"
         },
         update: { 
-          imageUrl: user.imageUrl, 
+          
           firstName: user.firstName, 
           lastName: user.lastName
         },
         create: { 
           id: userId, 
           emailAddress: user.emailAddresses?.[0]?.emailAddress ?? "default@example.com",
-          imageUrl: user.imageUrl, 
+          
           firstName: user.firstName, 
           lastName: user.lastName
-        }
+        },
       })
 
       return redirect('/dashboard')
-      
-
-    
+         
 }
+
 
 export default SyncUser
