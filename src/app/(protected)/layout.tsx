@@ -14,11 +14,13 @@ const SidebarLayout = ({ children }: Props) => {
           {/* You can add additional components like a SearchBar if needed */}
           <div className='ml-auto'></div>
           <UserButton />
+          </div>
           {/* main content */}
-          <div className='border-sidebar-border bg-sidebar border shadow rounded-md overflow-y-scroll h-[calc(100vh-6rem)]'>
+          <div className='border-sidebar-border bg-sidebar border shadow rounded-md overflow-y-scroll h-[calc(100vh-6rem)] p-4'>
+            {children}
 
           </div>
-        </div>
+        
         
       </main>
     </SidebarProvider>
