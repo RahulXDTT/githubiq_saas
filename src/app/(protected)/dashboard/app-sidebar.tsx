@@ -1,6 +1,6 @@
 "use client";
 
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenuItem, SidebarMenuSubButton } from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSubButton } from "@/components/ui/sidebar";
 import { SidebarHeader } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils"; 
 import Link from "next/link"; // Correct import
@@ -13,6 +13,20 @@ const applicationItems = [
     { title: "Meetings", url: "/meetings", icon: Presentation },
     { title: "Billing", url: "/billing", icon: CreditCard }
 ];
+
+const projects=[
+    {
+        name: 'Project-1'
+    },
+
+    {
+        name: 'Project-2'
+    },
+
+    {
+        name: 'Project-3'
+    },
+]
 
 export function AppSidebar() {
     const pathname = usePathname();
@@ -41,6 +55,39 @@ export function AppSidebar() {
                                 </SidebarMenuItem>
                             );
                         })}
+                    </SidebarGroupContent>
+                </SidebarGroup>
+
+                <SidebarGroup>
+                    <SidebarGroupLabel>
+                        Your Projects
+                    </SidebarGroupLabel>
+                    <SidebarGroupContent>
+                       <SidebarMenu>
+                       {projects.map(project => {
+    return (
+        <SidebarMenuItem key={project.name}>
+            <SidebarMenuButton asChild>
+                <div>
+                <div className={cn(
+                        'rounded-sm border size-6 flex items-center justify-center text-sm bg-white text-primary',
+                        {
+                            
+                        }
+                    )}>
+                        {project.name[0]}
+                    </div>
+                    <span>{project.name}</span>
+                </div>
+                    
+                
+            </SidebarMenuButton>
+        </SidebarMenuItem>
+    );
+})}
+
+                       </SidebarMenu>
+
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
