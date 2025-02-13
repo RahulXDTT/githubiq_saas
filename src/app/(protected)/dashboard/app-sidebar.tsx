@@ -6,6 +6,8 @@ import { cn } from "@/lib/utils";
 import Link from "next/link"; // Correct import
 import { Bot, CreditCard, LayoutDashboard, Presentation } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { Button } from "react-day-picker";
+
 
 const applicationItems = [
     { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
@@ -39,7 +41,7 @@ export function AppSidebar() {
                 <SidebarGroup>
                     <SidebarGroupLabel>Application</SidebarGroupLabel>
                     <SidebarGroupContent>
-                        {applicationItems.map((item) => {
+                        <SidebarMenu>  {applicationItems.map((item) => {
                             const Icon = item.icon; // Fix dynamic JSX component
                             return (
                                 <SidebarMenuItem key={item.title}>
@@ -54,7 +56,8 @@ export function AppSidebar() {
                                     </SidebarMenuSubButton>
                                 </SidebarMenuItem>
                             );
-                        })}
+                        })} </SidebarMenu>
+                        
                     </SidebarGroupContent>
                 </SidebarGroup>
 
@@ -72,7 +75,7 @@ export function AppSidebar() {
                 <div className={cn(
                         'rounded-sm border size-6 flex items-center justify-center text-sm bg-white text-primary',
                         {
-                            
+                            'bg-primary text-white': true
                         }
                     )}>
                         {project.name[0]}
@@ -85,7 +88,10 @@ export function AppSidebar() {
         </SidebarMenuItem>
     );
 })}
+<div className="h-2"></div>
 
+                    
+                            
                        </SidebarMenu>
 
                     </SidebarGroupContent>
