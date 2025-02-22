@@ -7,6 +7,7 @@ import Link from "next/link"; // Correct import
 import { Bot, CreditCard, LayoutDashboard, Presentation } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Button } from "react-day-picker";
+import { buttonVariants } from '@/components/ui/button';
 
 
 const applicationItems = [
@@ -89,8 +90,11 @@ export function AppSidebar() {
     );
 })}
 <div className="h-2"></div>
+<SidebarMenuItem>
+<Button variant ={'outline'} className="w-fit"> 
 
-                    
+</Button>                                            
+</SidebarMenuItem>
                             
                        </SidebarMenu>
 
