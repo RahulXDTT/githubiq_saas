@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import { Toaster } from 'sonner'
 import { ClerkProvider} from "@clerk/nextjs"
 
 import { GeistSans } from "geist/font/sans";
@@ -21,6 +22,7 @@ export default function RootLayout({
      <html lang="en" className={`${GeistSans.variable}`}>
       <body>
         <TRPCReactProvider>{children}</TRPCReactProvider>
+        <Toaster richColors/>
       </body>
     </html>
   

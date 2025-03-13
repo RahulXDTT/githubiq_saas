@@ -4,11 +4,13 @@ import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGrou
 import { SidebarHeader } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils"; 
 import Link from "next/link"; // Correct import
-import { Bot, CreditCard, LayoutDashboard, Presentation } from "lucide-react";
+import { Bot, CreditCard, LayoutDashboard, Plus, Presentation } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { Button } from "react-day-picker";
+import { Button } from '@/components/ui/button'; // Import your custom Button component
 import { buttonVariants } from '@/components/ui/button';
-
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import Image from "next/image";
 
 const applicationItems = [
     { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
@@ -17,90 +19,85 @@ const applicationItems = [
     { title: "Billing", url: "/billing", icon: CreditCard }
 ];
 
-const projects=[
-    {
-        name: 'Project-1'
-    },
-
-    {
-        name: 'Project-2'
-    },
-
-    {
-        name: 'Project-3'
-    },
-]
+const projects = [
+    { name: 'Project-1' },
+    { name: 'Project-2' },
+    { name: 'Project-3' },
+];
 
 export function AppSidebar() {
     const pathname = usePathname();
     
     return (
         <Sidebar collapsible="icon" variant="floating">
-            <SidebarHeader>Logo</SidebarHeader>
+            <SidebarHeader>
+                <div className="flex items-center gap-2">
+                    <Image src='/logo.png' alt="logo" width={200} height={180}/>
+
+                </div>
+            </SidebarHeader>
 
             <SidebarContent>
                 <SidebarGroup>
                     <SidebarGroupLabel>Application</SidebarGroupLabel>
                     <SidebarGroupContent>
-                        <SidebarMenu>  {applicationItems.map((item) => {
-                            const Icon = item.icon; // Fix dynamic JSX component
-                            return (
-                                <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuSubButton asChild>
-                                        <Link 
-                                            href={item.url} 
-                                            className={cn({ "!bg-primary !text-white": pathname === item.url }, "flex items-center gap-2 p-2 rounded-md")}
-                                        >
-                                            <Icon className="w-5 h-5" /> 
-                                            <span>{item.title}</span>
-                                        </Link>
-                                    </SidebarMenuSubButton>
-                                </SidebarMenuItem>
-                            );
-                        })} </SidebarMenu>
-                        
+                        <SidebarMenu>
+                            {applicationItems.map((item) => {
+                                const Icon = item.icon; // Fix dynamic JSX component
+                                return (
+                                    <SidebarMenuItem key={item.title}>
+                                        <SidebarMenuSubButton asChild>
+                                            <Link 
+                                                href={item.url} 
+                                                className={cn({ "!bg-primary !text-white": pathname === item.url }, "flex items-center gap-2 p-2 rounded-md")}
+                                            >
+                                                <Icon className="w-5 h-5" /> 
+                                                <span>{item.title}</span>
+                                            </Link>
+                                        </SidebarMenuSubButton>
+                                    </SidebarMenuItem>
+                                );
+                            })}
+                        </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
 
                 <SidebarGroup>
-                    <SidebarGroupLabel>
-                        Your Projects
-                    </SidebarGroupLabel>
+                    <SidebarGroupLabel>Your Projects</SidebarGroupLabel>
                     <SidebarGroupContent>
-                       <SidebarMenu>
-                       {projects.map(project => {
-    return (
-        <SidebarMenuItem key={project.name}>
-            <SidebarMenuButton asChild>
-                <div>
-                <div className={cn(
-                        'rounded-sm border size-6 flex items-center justify-center text-sm bg-white text-primary',
-                        {
-                            'bg-primary text-white': true
-                        }
-                    )}>
-                        {project.name[0]}
-                    </div>
-                    <span>{project.name}</span>
-                </div>
-                    
-                
-            </SidebarMenuButton>
-        </SidebarMenuItem>
-    );
-})}
-<div className="h-2"></div>
-<SidebarMenuItem>
-<Button variant ={'outline'} className="w-fit"> 
-
-</Button>                                            
-</SidebarMenuItem>
-                            
-                       </SidebarMenu>
-
+                        <SidebarMenu>
+                            {projects.map(project => {
+                                return (
+                                    <SidebarMenuItem key={project.name}>
+                                        <SidebarMenuButton asChild>
+                                            <div>
+                                                <div className={cn(
+                                                    'rounded-sm border size-6 flex items-center justify-center text-sm bg-white text-primary',
+                                                    {
+                                                        'bg-primary text-white': true
+                                                    }
+                                                )}>
+                                                    {project.name[0]}
+                                                </div>
+                                                <span>{project.name}</span>
+                                            </div>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                );
+                            })}
+                            <div className="h-2"></div>
+                            <SidebarMenuItem>
+                                <Link href="/create">
+                                    <Button size = 'sm' variant="outline" className="w-fit">
+                                        <Plus/>
+                                        Create
+                                    </Button>
+                                </Link>
+                            </SidebarMenuItem>
+                        </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
-        </Sidebar> 
+        </Sidebar>
     );
 }
