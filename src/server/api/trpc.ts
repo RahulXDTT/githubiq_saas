@@ -26,9 +26,13 @@ import { auth } from "@clerk/nextjs/server"
  *
  * @see https://trpc.io/docs/server/context
  */
+// In trpc.ts
 export const createTRPCContext = async (opts: { headers: Headers }) => {
+  const user = await auth();
+  
   return {
     db,
+    user,
     ...opts,
   };
 };
@@ -83,21 +87,58 @@ export const createTRPCRouter = t.router;
  */
 
 const isAuthenticated = t.middleware(async ({ next, ctx }) => {
-  const user = await auth();
-  
-  if (!user) {
+  const authObject = await auth();
+ 
+  if (!authObject || !authObject.userId) {
     throw new TRPCError({
-      code: 'UNAUTHORIZED'
+      code: 'UNAUTHORIZED',
+      message: 'You must be logged in to access this resource'
     });
   }
-
+  
+  // Try to find the user in the database
+  let dbUser = await ctx.db.user.findUnique({
+    where: { id: authObject.userId }
+  });
+  
+  // If user doesn't exist in the database, create them
+  if (!dbUser) {
+    try {
+      // For Clerk, we need to get the user's email differently
+      // You might need to use Clerk's API to get more user details
+      // This is a simplified example - you may need to adapt it
+      
+      // For now, create a user with just the ID and a placeholder email
+      // You can update this with the actual email from Clerk if available
+      const userEmail = `${authObject.userId}@example.com`; // Placeholder email
+      
+      dbUser = await ctx.db.user.create({
+        data: {
+          id: authObject.userId,
+          emailAddress: userEmail,
+          // Add other fields as needed
+        }
+      });
+      
+      console.log("Created new user in database:", dbUser);
+    } catch (error) {
+      console.error("Failed to create user in database:", error);
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to create user in database'
+      });
+    }
+  }
+  
   return next({
     ctx: {
       ...ctx,
-      user
+      user: authObject,
+      dbUser
     }
   });
 });
+
 
 const timingMiddleware = t.middleware(async ({ next, path }) => {
   const start = Date.now();

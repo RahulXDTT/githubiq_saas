@@ -45,3 +45,8 @@ model UserToProject {
 
   @@unique([userId, projectId]) 
   }
+model Post {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+}
