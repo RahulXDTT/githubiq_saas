@@ -6,11 +6,11 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import useRefetch from '../../../hooks/use-refetch';
 
-type FormInput = {
+interface FormInput {
     repoUrl: string;
     projectName: string;
     githubToken?: string;
-};
+}
 
 const CreatePage = () => {
     const { register, handleSubmit, reset } = useForm<FormInput>();

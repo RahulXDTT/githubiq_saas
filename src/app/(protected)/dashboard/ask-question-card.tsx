@@ -11,16 +11,44 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'; // ✅ Import from your wrapper, not @radix-ui directly
 import Image from 'next/image';
+import { askQuestion } from './actions';
+import { SourceCode } from 'eslint';
+import { readStreamableValue } from 'ai/rsc';
 
 const AskQuestionCard = () => {
   const { project } = useProject();
   const [question, setQuestion] = React.useState('');
   const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const [filesReferences, setFilesReferences] = React.useState<{
+    fileName: string;
+    sourceCode: string;
+    summary: string;
+  }[]>([]);
+  const [answer, setAnswer] = React.useState('');
+  
+  
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+  
+    if (!project?.id) return;
+  
+    setLoading(true);
     setOpen(true);
+  
+    const { output, filesReferences } = await askQuestion(question, project.id);
+    setFilesReferences(filesReferences);
+  
+    for await (const delta of readStreamableValue(output)) {
+      if (delta) {
+        setAnswer(ans => ans + delta);
+      }
+    }
+    setLoading(false);
   };
+  
+  
 
   return (
     <>
@@ -29,9 +57,14 @@ const AskQuestionCard = () => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-lg font-semibold">
               <Image src="/logo_only.png" alt="GithubIQ" width={40} height={40} />
-              Your question has been submitted!
+              
             </DialogTitle>
           </DialogHeader>
+          {answer}
+          <h1>Files Reference</h1>
+          {filesReferences.map(file => {
+            return <span>{file.fileName}</span>;
+          })}
         </DialogContent>
       </Dialog>
 

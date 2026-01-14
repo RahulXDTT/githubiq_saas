@@ -3,7 +3,7 @@ import React from 'react'
 import { UserButton } from '@clerk/nextjs'
 import { AppSidebar } from './qa/app-sidebar'
 
-type Props = {
+interface Props {
   children: React.ReactNode
 }
 

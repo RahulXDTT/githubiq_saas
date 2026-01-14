@@ -53,7 +53,7 @@ export const projectRouter = createTRPCRouter({
               where: {
                 userToProjects: {
                   some: {
-                    userId: ctx.user.userId!
+                    userId: ctx.user.userId
                   }
                 },
                 deletedAt: null
@@ -63,8 +63,22 @@ export const projectRouter = createTRPCRouter({
           getCommits: protectedProcedure.input(z.object({
             projectId: z.string()
           })).query(async ({ ctx, input }) => {
-            pollCommits(input.projectId).then().catch(console.error);
-            return await ctx.db.commit.findMany({ where: { projectId: input.projectId } });
+            await pollCommits(input.projectId).then().catch(console.error);
+            return await ctx.db.commit.findMany({
+              where: { projectId: input.projectId },
+              select: {
+                id: true,
+                createdAt: true,
+                updatedAt: true,
+                projectId: true,
+                commitMessage: true,
+                commitHash: true,
+                commitAuthorName: true,
+                commitAuthorAvatar: true,
+                commitDate: true,
+                summary: true,
+              },
+            });
           })
           
 });

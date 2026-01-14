@@ -6,11 +6,26 @@ const model = genAI.getGenerativeModel({
   model: 'gemini-2.0-flash-lite',
 });
 
+const retry = async <T>(fn: () => Promise<T>, retries = 5, delay = 1000): Promise<T> => {
+  try {
+    return await fn();
+  } catch (error: any) {
+    if (retries > 0 && error.status === 429) {
+      console.warn(`Rate limit hit, retrying in ${delay / 1000}s...`);
+      await new Promise(res => setTimeout(res, delay));
+      return retry(fn, retries - 1, delay * 2);
+    } else {
+      throw error;
+    }
+  }
+};
+
 export const AIsummariseCommit = async (diff: string) => {
-  const response = await model.generateContent([
-    `You are an expert programmer, and you are trying to summarize a git diff.
+  const response = await retry(async () => {
+    return await model.generateContent([
+      `You are an expert programmer, and you are trying to summarize a git diff.
+Your summary should be concise and in plain text. Do not include any raw HTML, markdown, or special formatting found within the diff content itself. Focus solely on summarizing the code changes and their impact.
 Reminders about the git diff format:
-For every file, there are a few metadata lines, like (for example):
 \`\`\`
 diff --git a/lib/index.js b/lib/index.js
 index aadf691..bfef603 100644
@@ -40,7 +55,8 @@ Do not include parts of the example in your summary.
 It is given only as an example of appropriate comments.
 
 Please summarise the following diff file:\n\n${diff}`,
-  ]);
+    ]);
+  });
 
   return response.response.text();
 };
